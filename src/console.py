@@ -27,6 +27,7 @@ class console:
             master=self.base,
             fg_color=subcolor
         )
+
         self.exitbutton = ctk.CTkButton(master=self.frame1,width=120,height=40,text="おわる",command=lambda:self.base.destroy(),fg_color="red",hover_color="maroon")
         self.exitbutton.pack(padx=10,pady=20)
         self.movebutton = ctk.CTkButton(master=self.frame1,width=120,height=40,text="うえ",command=lambda:self.moveup(),fg_color=maincolor,hover_color=hovorcolor)
@@ -35,7 +36,7 @@ class console:
         self.movedbutton.pack(padx=10,pady=20)
         self.reversebutton = ctk.CTkButton(master=self.frame1,width=120,height=40,text="ふりかえる",command=lambda:self.reverse(),fg_color=maincolor,hover_color=hovorcolor)
         self.reversebutton.pack(padx=10,pady=20)
-        self.pushbutton = ctk.CTkButton(master=self.frame1,width=120,height=40,text="おくる",command=lambda:self.push(),fg_color=maincolor,hover_color=hovorcolor)
+        self.pushbutton = ctk.CTkButton(master=self.frame1,width=120,height=40,text="おくる",command=lambda:push(),fg_color=maincolor,hover_color=hovorcolor)
         self.pushbutton.pack(padx=10,pady=20,side=tk.BOTTOM)
         
         self.frame1.pack(side=tk.LEFT,padx=10,pady=10,fill=tk.Y)
@@ -45,7 +46,6 @@ class console:
             fg_color=subcolor
         )
         self.frame2.pack(side=tk.RIGHT,padx=10,pady=10,fill=tk.BOTH)
-        
         self.canvas = ctk.CTkCanvas(self.frame2,bg=darkcolor,width=750,height=500)
         
         self.Mismagiusimage = Image.open("./img/Dedenne.png")
@@ -71,6 +71,8 @@ class console:
         self.inlabel.pack(padx=5,pady=3)
         self.inputbox.pack(padx=5,pady=3)
 
+        self.inputbox.bind('<Return>',lambda event:self.push())
+
     def moveup(self):
         for i in range(10):
             self.canvas.move(self.imgid,0,-5)
@@ -83,15 +85,6 @@ class console:
             self.canvas.update()
             time.sleep(0.03)
         self.model.setModelPosY(self.model.getModelPosY()+50)
-    def reverse(self):
-            self.canvas.delete(self.imgid)
-            self.Mismagiusimage = ImageOps.mirror(self.Mismagiusimage)
-            self.Mismagiusimg = ImageTk.PhotoImage(self.Mismagiusimage)
-            self.imgid = self.canvas.create_image(
-                self.model.getModelPosX(),
-                self.model.getModelPosY(),
-                image=self.Mismagiusimg
-            )    
 
     def push(self):
         text = self.inputbox.get("1.0","end")
@@ -101,6 +94,16 @@ class console:
             self.insertoutput(self.User.getUserName()+":"+text)
             self.model.send(text)
             self.insertoutput(self.model.getModelName()+":"+self.model.getSendMessage())
+
+    def reverse(self):
+            self.canvas.delete(self.imgid)
+            self.Mismagiusimage = ImageOps.mirror(self.Mismagiusimage)
+            self.Mismagiusimg = ImageTk.PhotoImage(self.Mismagiusimage)
+            self.imgid = self.canvas.create_image(
+                self.model.getModelPosX(),
+                self.model.getModelPosY(),
+                image=self.Mismagiusimg
+            )    
 
     def insertoutput(self,text):
             self.outputbox.configure(state="normal")
